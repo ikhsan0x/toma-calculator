@@ -20,7 +20,7 @@ export default function Home() {
   const tokenIds = ['notcoin', 'dogs-2', 'hamster-kombat', 'catizen'];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, '');
+    const value = e.target.value.replace(/[^\d]/g, '');
     setTokenAmount(value);
     if (value) {
       setFormattedTokenAmount(new Intl.NumberFormat().format(Number(value)));
@@ -36,7 +36,7 @@ export default function Home() {
   };
 
   const getTokenRates = async () => {
-    const numericTokenAmount = Number(tokenAmount.replace(/,/g, ''));
+    const numericTokenAmount = parseInt(tokenAmount.replace(/,/g, ''), 10);
     if (isNaN(numericTokenAmount) || numericTokenAmount <= 0) {
       alert('Please enter a valid token amount.');
       return;
