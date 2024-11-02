@@ -37,7 +37,7 @@ export default function Home() {
 
   const getTokenRates = async () => {
     const numericTokenAmount = Number(tokenAmount.replace(/,/g, ''));
-    if (!numericTokenAmount || isNaN(numericTokenAmount) || numericTokenAmount <= 0) {
+    if (isNaN(numericTokenAmount) || numericTokenAmount <= 0) {
       alert('Please enter a valid token amount.');
       return;
     }
