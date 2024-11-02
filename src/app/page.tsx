@@ -2,9 +2,20 @@
 
 import { useState } from 'react';
 
+interface TokenRate {
+  name: string;
+  symbol: string;
+  marketCapUsd: number;
+  marketCapIdr: number;
+  tokenPriceUsd: number;
+  tokenValueUsd: number;
+  tokenPriceIdr: number;
+  tokenValueIdr: number;
+}
+
 export default function Home() {
   const [tokenAmount, setTokenAmount] = useState<string>('');
-  const [tokenRates, setTokenRates] = useState<any[]>([]);
+  const [tokenRates, setTokenRates] = useState<TokenRate[]>([]);
   const tokenIds = ['notcoin', 'dogs-2', 'hamster-kombat', 'catizen'];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -14,7 +25,7 @@ export default function Home() {
 
   const handleInputBlur = () => {
     if (tokenAmount) {
-      setTokenAmount(new Intl.NumberFormat().format(Number(tokenAmount)));
+      setTokenAmount(new Intl.NumberFormat().format(Number(tokenAmount.replace(/,/g, ''))));
     }
   };
 
@@ -31,7 +42,7 @@ export default function Home() {
       );
       const data = await response.json();
       setTokenRates(
-        data.map((token: any) => ({
+        data.map((token: TokenRate) => ({
           ...token,
           tokenPriceUsd: token.marketCapUsd ? token.marketCapUsd / 100000000000 : 0,
           tokenValueUsd: token.marketCapUsd ? (token.marketCapUsd / 100000000000) * numericTokenAmount : 0,
@@ -45,8 +56,8 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto px-4 mt-10 mb-10">
-      <div className="flex items-center justify-center min-h-screen text-white">
+    <div className="container mx-auto px-4">
+      <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
         <div className="w-full max-w-md p-6 bg-gray-800 rounded-lg border border-blue-300 shadow-lg">
           <p className="text-xs text-gray-400 text-center mb-2">
             <a

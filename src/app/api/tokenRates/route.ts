@@ -31,13 +31,13 @@ export async function GET(req: NextRequest) {
     const tokenData = results.map((data) => ({
       name: data.name,
       symbol: data.symbol,
-      marketCapUsd: data.market_data.market_cap.usd,
-      marketCapIdr: data.market_data.market_cap.idr,
+      marketCapUsd: data.market_data?.market_cap?.usd ?? 0,
+      marketCapIdr: data.market_data?.market_cap?.idr ?? 0,
     }));
 
     cache.put(cacheKey, tokenData, 10 * 60 * 1000); // Cache for 10 minutes
     return NextResponse.json(tokenData, { status: 200 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Error fetching token rates' }, { status: 500 });
   }
 }
