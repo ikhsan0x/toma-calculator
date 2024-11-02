@@ -1,6 +1,7 @@
 declare module 'memory-cache';
 import cache from 'memory-cache';
 import { NextRequest, NextResponse } from 'next/server';
+import 'dotenv/config';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -19,10 +20,10 @@ export async function GET(req: NextRequest) {
         const response = await fetch(
           `https://api.coingecko.com/api/v3/coins/${tokenId}`,
           {
-            headers: {
+            headers: new Headers({
               accept: 'application/json',
-              'x-cg-demo-api-key': 'CG-g45oG44aBMkrfsZXP9rGame4',
-            },
+              'x-cg-demo-api-key': process.env.COINGECKO_API_KEY ?? '',
+            }),
           }
         );
         return response.json();
