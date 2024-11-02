@@ -50,10 +50,10 @@ export default function Home() {
       setTokenRates(
         data.map((token: TokenRate) => ({
           ...token,
-          tokenPriceUsd: token.marketCapUsd ? token.marketCapUsd / 100000000000 : 0,
-          tokenValueUsd: token.marketCapUsd ? (token.marketCapUsd / 100000000000) * numericTokenAmount : 0,
-          tokenPriceIdr: token.marketCapIdr ? token.marketCapIdr / 100000000000 : 0,
-          tokenValueIdr: token.marketCapIdr ? (token.marketCapIdr / 100000000000) * numericTokenAmount : 0,
+          tokenPriceUsd: token.marketCapUsd ? parseFloat((token.marketCapUsd / 100000000000).toFixed(6)) : 0,
+          tokenValueUsd: token.marketCapUsd ? parseFloat(((token.marketCapUsd / 100000000000) * numericTokenAmount).toFixed(2)) : 0,
+          tokenPriceIdr: token.marketCapIdr ? parseFloat((token.marketCapIdr / 100000000000).toFixed(2)) : 0,
+          tokenValueIdr: token.marketCapIdr ? parseFloat(((token.marketCapIdr / 100000000000) * numericTokenAmount).toFixed(0)) : 0,
         }))
       );
     } catch (error) {
