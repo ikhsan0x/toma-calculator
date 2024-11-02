@@ -15,12 +15,18 @@ interface TokenRate {
 
 export default function Home() {
   const [tokenAmount, setTokenAmount] = useState<string>('');
+  const [formattedTokenAmount, setFormattedTokenAmount] = useState<string>('');
   const [tokenRates, setTokenRates] = useState<TokenRate[]>([]);
   const tokenIds = ['notcoin', 'dogs-2', 'hamster-kombat', 'catizen'];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, '');
     setTokenAmount(value);
+    if (value) {
+      setFormattedTokenAmount(new Intl.NumberFormat().format(Number(value)));
+    } else {
+      setFormattedTokenAmount('');
+    }
   };
 
   const handleInputBlur = () => {
@@ -56,7 +62,7 @@ export default function Home() {
   };
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto px-4 mt-5 mb-5">
       <div className="flex items-center justify-center min-h-screen bg-gray-900 text-white">
         <div className="w-full max-w-md p-6 bg-gray-800 rounded-lg border border-blue-300 shadow-lg">
           <p className="text-xs text-gray-400 text-center mb-2">
@@ -74,6 +80,7 @@ export default function Home() {
           <div className="mb-4">
             <label htmlFor="tokenAmount" className="block text-sm font-medium text-blue-200 mb-1">
               Enter Number of TOMA Tokens:
+              <span className="ml-2 text-blue-400">{formattedTokenAmount}</span>
             </label>
             <input
               type="text"
@@ -106,17 +113,18 @@ export default function Home() {
                 <p className="text-green-500 font-bold">
                   Market Cap (USD): ${token.marketCapUsd ? token.marketCapUsd.toLocaleString() : 'N/A'}
                 </p>
+                <hr></hr>
                 <p className="text-blue-300">
-                  Token Price (USD): ${token.tokenPriceUsd ? token.tokenPriceUsd.toFixed(6) : 'N/A'}
+                  TOMA Price (USD): ${token.tokenPriceUsd ? token.tokenPriceUsd.toFixed(6) : 'N/A'}
                 </p>
                 <p className="text-yellow-300">
-                  Your Token Value (USD): ${token.tokenValueUsd ? token.tokenValueUsd.toLocaleString() : 'N/A'}
+                  Your TOMA Value (USD): ${token.tokenValueUsd ? Number(token.tokenValueUsd.toFixed(0)).toLocaleString()  : 'N/A'}
                 </p>
                 <p className="text-blue-300">
-                  Token Price (IDR): Rp{token.tokenPriceIdr ? token.tokenPriceIdr.toFixed(1) : 'N/A'}
+                  TOMA Price (IDR): Rp{token.tokenPriceIdr ? Number(token.tokenPriceIdr.toFixed(0)).toLocaleString()  : 'N/A'}
                 </p>
                 <p className="text-yellow-300">
-                  Your Token Value (IDR): Rp{token.tokenValueIdr ? token.tokenValueIdr.toLocaleString() : 'N/A'}
+                  Your TOMA Value (IDR): Rp{token.tokenValueIdr ? Number(token.tokenValueIdr.toFixed(0)).toLocaleString() : 'N/A'}
                 </p>
               </div>
             ))}
