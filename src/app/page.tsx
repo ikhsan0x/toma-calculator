@@ -17,6 +17,7 @@ export default function Home() {
   const [tokenAmount, setTokenAmount] = useState<string>('');
   const [formattedTokenAmount, setFormattedTokenAmount] = useState<string>('');
   const [tokenRates, setTokenRates] = useState<TokenRate[]>([]);
+  const [loading, setLoading] = useState<boolean>(false); 
   const tokenIds = ['notcoin', 'dogs-2', 'hamster-kombat', 'catizen'];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +37,8 @@ export default function Home() {
       return;
     }
 
+    setLoading(true); 
+
     try {
       const response = await fetch(
         `/api/tokenRates?tokenIds=${tokenIds.join(',')}`
@@ -44,15 +47,17 @@ export default function Home() {
       setTokenRates(
         data.map((token: TokenRate) => ({
           ...token,
-          tokenPriceUsd: token.marketCapUsd ? Number((token.marketCapUsd / 100000000000).toFixed(6)) : 0,
-          tokenValueUsd: token.marketCapUsd ? Number(((token.marketCapUsd / 100000000000) * numericTokenAmount).toFixed(2)) : 0,
-          tokenPriceIdr: token.marketCapIdr ? Number((token.marketCapIdr / 100000000000).toFixed(2)) : 0,
-          tokenValueIdr: token.marketCapIdr ? Math.round((token.marketCapIdr / 100000000000) * numericTokenAmount) : 0,
+          tokenPriceUsd: token.marketCapUsd ? Number((token.marketCapUsd / 1000000000000).toFixed(6)) : 0,
+          tokenValueUsd: token.marketCapUsd ? Number(((token.marketCapUsd / 1000000000000) * numericTokenAmount).toFixed(2)) : 0,
+          tokenPriceIdr: token.marketCapIdr ? Number((token.marketCapIdr / 1000000000000).toFixed(2)) : 0,
+          tokenValueIdr: token.marketCapIdr ? Math.round((token.marketCapIdr / 1000000000000) * numericTokenAmount) : 0,
         }))
       );
     } catch (error) {
       console.error('Error fetching token rates:', error);
-      alert('Gagal mengambil data token rates. Silakan coba lagi nanti.');
+      alert('Error fetching token rates');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,7 +79,7 @@ export default function Home() {
           {/* Input Section */}
           <div className="mb-4">
             <label htmlFor="tokenAmount" className="block text-sm font-medium text-blue-200 mb-1">
-                Enter Number of TOMA Tokens:
+              Enter Number of TOMA Tokens:
               <span className="ml-2 text-blue-400">{formattedTokenAmount}</span>
             </label>
             <input
@@ -99,29 +104,40 @@ export default function Home() {
 
           {/* Output Section */}
           <div id="output" className="text-center">
-            {tokenRates.map((token, index) => (
-              <div key={index} className="mb-4 p-4 bg-gray-700 rounded-lg border border-blue-300 sm:mx-1">
-                <h2 className="text-lg font-bold text-blue-300">
-                  {token.name} ({token.symbol.toUpperCase()})
-                </h2>
-                <p className="text-green-500 font-bold">
-                  Market Cap (USD): ${token.marketCapUsd ? token.marketCapUsd.toLocaleString() : 'N/A'}
-                </p>
-                <hr></hr>
-                <p className="text-blue-300">
-                  Price TOMA (USD): ${token.tokenPriceUsd ? token.tokenPriceUsd.toFixed(6) : 'N/A'}
-                </p>
-                <p className="text-yellow-300">
-                  Your TOMA Value (USD): ${token.tokenValueUsd ? Intl.NumberFormat().format(token.tokenValueUsd) : 'N/A'}
-                </p>
-                <p className="text-blue-300">
-                  Price TOMA (IDR): Rp{token.tokenPriceIdr ? Intl.NumberFormat().format(token.tokenPriceIdr) : 'N/A'}
-                </p>
-                <p className="text-yellow-300">
-                  Your TOMA Value (IDR): Rp{token.tokenValueIdr ? Intl.NumberFormat().format(token.tokenValueIdr) : 'N/A'}
-                </p>
+            {loading ? (
+              <div className="animate-pulse">
+                <div className="mb-4 p-4 bg-gray-700 rounded-lg border border-blue-300">
+                  <div className="h-6 bg-gray-600 rounded w-3/4 mb-2"></div>
+                  <div className="h-6 bg-gray-600 rounded w-1/2 mb-2"></div>
+                  <div className="h-6 bg-gray-600 rounded w-3/4 mb-2"></div>
+                  <div className="h-6 bg-gray-600 rounded w-1/2"></div>
+                </div>
               </div>
-            ))}
+            ) : (
+              tokenRates.map((token, index) => (
+                <div key={index} className="mb-4 p-4 bg-gray-700 rounded-lg border border-blue-300 sm:mx-1">
+                  <h2 className="text-lg font-bold text-blue-300">
+                    {token.name} ({token.symbol.toUpperCase()})
+                  </h2>
+                  <p className="text-green-500 font-bold">
+                    Market Cap (USD): ${token.marketCapUsd ? token.marketCapUsd.toLocaleString() : 'N/A'}
+                  </p>
+                  <hr></hr>
+                  <p className="text-blue-300">
+                    Price TOMA (USD): ${token.tokenPriceUsd ? token.tokenPriceUsd.toFixed(6) : 'N/A'}
+                  </p>
+                  <p className="text-yellow-300">
+                    Your TOMA Value (USD): ${token.tokenValueUsd ? Intl.NumberFormat().format(token.tokenValueUsd) : 'N/A'}
+                  </p>
+                  <p className="text-blue-300">
+                    Price TOMA (IDR): Rp{token.tokenPriceIdr ? Intl.NumberFormat().format(token.tokenPriceIdr) : 'N/A'}
+                  </p>
+                  <p className="text-yellow-300">
+                    Your TOMA Value (IDR): Rp{token.tokenValueIdr ? Intl.NumberFormat().format(token.tokenValueIdr) : 'N/A'}
+                  </p>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
